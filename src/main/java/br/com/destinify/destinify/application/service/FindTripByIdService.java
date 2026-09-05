@@ -2,6 +2,7 @@ package br.com.destinify.destinify.application.service;
 
 import br.com.destinify.destinify.application.ports.in.GetTripByIdUseCase;
 import br.com.destinify.destinify.application.ports.out.TripRepositoryPort;
+import br.com.destinify.destinify.domain.exception.BusinessException;
 import br.com.destinify.destinify.domain.model.Trip;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,6 @@ public class FindTripByIdService implements GetTripByIdUseCase {
     public Trip execute(UUID tripId) {
 
         return tripRepositoryPort.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip not found with id: " + tripId));
+                .orElseThrow(() -> new BusinessException("Trip not found with id: " + tripId));
     }
 }

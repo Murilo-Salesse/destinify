@@ -1,4 +1,4 @@
-package br.com.destinify.destinify.infrastucture.adapters.in.rest.dto;
+package br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.request;
 
 import br.com.destinify.destinify.application.dto.request.CreateTripCommand; // <-- NOVO IMPORT AQUI
 import jakarta.validation.constraints.Future;

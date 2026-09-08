@@ -1,6 +1,7 @@
 package br.com.destinify.destinify.domain.model;
 
 import br.com.destinify.destinify.domain.enums.TripStatus;
+import br.com.destinify.destinify.domain.exception.BusinessException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -52,6 +53,7 @@ public class Trip {
             throw new IllegalArgumentException("A capacidade de assentos deve ser maior que zero.");
         }
         OffsetDateTime now = OffsetDateTime.now();
+
         return new Trip(
                 UUID.randomUUID(),
                 title,
@@ -70,6 +72,58 @@ public class Trip {
         );
     }
 
+    public void updateTrip(String title,
+                           OffsetDateTime departureAt,
+                           OffsetDateTime returnAt,
+                           BigDecimal price,
+                           Integer totalSeats,
+                           String description,
+                           String includedItems,
+                           String coverImageUrl) {
+
+
+        if (this.status == TripStatus.COMPLETED || this.status == TripStatus.CANCELLED) {
+            throw new BusinessException("Não é possível alterar uma viagem finalizada ou cancelada.");
+        }
+        if (price != null && price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("O preço da viagem deve ser maior que zero.");
+        }
+        if (departureAt != null && returnAt != null && departureAt.isAfter(returnAt)) {
+            throw new BusinessException("A data de ida não pode ser posterior à data de volta.");
+        }
+
+        if (totalSeats != null) {
+            if (totalSeats <= 0) {
+                throw new BusinessException("A capacidade de assentos deve ser maior que zero.");
+            }
+
+            // Se não há reservas feitas (todas as vagas ainda estão livres)
+            if (this.availableSeats.equals(this.totalSeats)) {
+                this.availableSeats = totalSeats;
+            } else {
+                int reservedSeats = this.totalSeats - this.availableSeats;
+                if (totalSeats < reservedSeats) {
+                    throw new BusinessException("A nova capacidade não pode ser menor que as vagas já reservadas (" + reservedSeats + ").");
+                }
+                this.availableSeats = totalSeats - reservedSeats;
+            }
+
+            this.totalSeats = totalSeats;
+        }
+
+        // Atualiza os campos desta instância (this)
+        this.title = title;
+        this.departureAt = departureAt;
+        this.returnAt = returnAt;
+        this.price = price;
+        this.totalSeats = totalSeats;
+        this.description = description;
+        this.includedItems = includedItems;
+        this.coverImageUrl = coverImageUrl;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+
 //    public void reserveSeats(int seatsToReserve) {
 //        if (this.status != TripStatus.PUBLISHED) {
 //            throw new BusinessException("Não é possível reservar vagas em uma viagem que não está aberta.");
@@ -83,6 +137,7 @@ public class Trip {
 //        this.availableSeats -= seatsToReserve;
 //        this.updatedAt = OffsetDateTime.now();
 //    }
+
 //    public void releaseSeats(int seatsToRelease) {
 //        if (this.availableSeats + seatsToRelease > this.totalSeats) {
 //            this.availableSeats = this.totalSeats;
@@ -91,6 +146,7 @@ public class Trip {
 //        }
 //        this.updatedAt = OffsetDateTime.now();
 //    }
+
 //    public void publish() {
 //        if (this.status != TripStatus.DRAFT) {
 //            throw new BusinessException("Apenas viagens em rascunho podem ser publicadas.");

@@ -6,7 +6,7 @@ public enum TripStatus {
     PUBLISHED("Publicado"),
     CONFIRMED("Confirmado"),
     COMPLETED("Concluído"),
-    CANCELED("Cancelado");
+    CANCELLED("Cancelado");
 
     private final String description;
 

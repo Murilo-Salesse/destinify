@@ -1,6 +1,7 @@
 package br.com.destinify.destinify.infrastucture.adapters.in.rest.exception;
 
 import br.com.destinify.destinify.domain.exception.BusinessException;
+import br.com.destinify.destinify.domain.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
@@ -17,8 +18,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     // 1. Trata 404 - Recurso Não Encontrado
-    @ExceptionHandler(BusinessException.class)
-    public ProblemDetail handleResourceNotFoundException(BusinessException ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleResourceNotFoundException(ResourceNotFoundException ex) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setTitle("Recurso Não Encontrado");

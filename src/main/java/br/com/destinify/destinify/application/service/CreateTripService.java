@@ -19,7 +19,6 @@ public class CreateTripService implements CreateTripUseCase {
     @Override
     @Transactional
     public Trip execute(CreateTripCommand command) {
-        // 1. Cria a entidade de domínio executando as regras de validação do Trip
         Trip newTrip = Trip.createNew(
                 command.title(),
                 command.destination(),
@@ -30,9 +29,9 @@ public class CreateTripService implements CreateTripUseCase {
                 command.description(),
                 command.includedItems(),
                 command.coverImageUrl()
+
         );
 
-        // 2. Persiste através da porta de saída
         return tripRepositoryPort.save(newTrip);
     }
 }

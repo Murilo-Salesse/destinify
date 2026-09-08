@@ -1,13 +1,16 @@
 package br.com.destinify.destinify.infrastucture.adapters.out.persistence;
 
+import br.com.destinify.destinify.application.dto.request.TripFilterQuery;
 import br.com.destinify.destinify.application.ports.out.TripRepositoryPort;
 import br.com.destinify.destinify.domain.model.Trip;
 import br.com.destinify.destinify.infrastucture.adapters.out.entity.TripEntity;
 import br.com.destinify.destinify.infrastucture.adapters.out.mapper.TripPersistenceMapper;
 import br.com.destinify.destinify.infrastucture.adapters.out.repository.TripRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,14 +25,9 @@ public class TripPersistenceAdapter implements TripRepositoryPort {
 
     @Override
     public Trip save(Trip trip) {
-
-        // 1. Converto de domínio para entidade
         TripEntity entity = TripPersistenceMapper.toEntity(trip);
-
-        // 2. Salvo no banco a entidade
         TripEntity savedEntity = tripRepository.save(entity);
 
-        // 3. Devolvo para a aplicação como Domínio puro
         return TripPersistenceMapper.toDomain(savedEntity);
     }
 
@@ -40,10 +38,15 @@ public class TripPersistenceAdapter implements TripRepositoryPort {
     }
 
     @Override
-    public List<Trip> findAll() {
-        return tripRepository.findAll()
-                .stream()
-                .map(TripPersistenceMapper::toDomain)
-                .collect(java.util.stream.Collectors.toList());
+    public void deleteById(UUID id) {
+        tripRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Trip> findWithFilters(TripFilterQuery filter, Pageable pageable) {
+        Specification<TripEntity> spec = TripSpecification.withFilter(filter);
+        Page<TripEntity> entityPage = tripRepository.findAll(spec, pageable);
+
+        return entityPage.map(TripPersistenceMapper::toDomain);
     }
 }

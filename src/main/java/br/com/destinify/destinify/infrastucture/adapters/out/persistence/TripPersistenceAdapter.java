@@ -25,9 +25,14 @@ public class TripPersistenceAdapter implements TripRepositoryPort {
 
     @Override
     public Trip save(Trip trip) {
-        TripEntity entity = TripPersistenceMapper.toEntity(trip);
-        TripEntity savedEntity = tripRepository.save(entity);
+        TripEntity entityToSave = tripRepository.findById(trip.getId())
+                .map(existingEntity -> {
+                    TripPersistenceMapper.updateEntity(existingEntity, trip);
+                    return existingEntity;
+                })
+                .orElseGet(() -> TripPersistenceMapper.toEntity(trip));
 
+        TripEntity savedEntity = tripRepository.save(entityToSave);
         return TripPersistenceMapper.toDomain(savedEntity);
     }
 

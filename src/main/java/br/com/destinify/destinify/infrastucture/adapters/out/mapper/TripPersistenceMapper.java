@@ -27,6 +27,23 @@ public class TripPersistenceMapper {
         );
     }
 
+    public static void updateEntity(TripEntity entity, Trip domain) {
+        if (entity == null || domain == null) return;
+
+        entity.setTitle(domain.getTitle());
+        entity.setDestination(domain.getDestination());
+        entity.setDepartureAt(domain.getDepartureAt());
+        entity.setReturnAt(domain.getReturnAt());
+        entity.setPrice(domain.getPrice());
+        entity.setTotalSeats(domain.getTotalSeats());
+        entity.setAvailableSeats(domain.getAvailableSeats());
+        entity.setDescription(domain.getDescription());
+        entity.setIncludedItems(domain.getIncludedItems());
+        entity.setCoverImageUrl(domain.getCoverImageUrl());
+        entity.setStatus(domain.getStatus());
+        // o updatedAt é atualizado automaticamente pelo @UpdateTimestamp do Hibernate
+    }
+
     // Banco (JPA) -> Domínio
     public static Trip toDomain(TripEntity entity) {
 

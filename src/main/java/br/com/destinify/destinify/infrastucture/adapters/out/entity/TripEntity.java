@@ -13,7 +13,6 @@ import java.util.UUID;
 public class TripEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "title", length = 150, nullable = false)

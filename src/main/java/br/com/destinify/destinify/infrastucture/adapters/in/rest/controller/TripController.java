@@ -1,12 +1,12 @@
-package br.com.destinify.destinify.infrastucture.adapters.in.rest;
+package br.com.destinify.destinify.infrastucture.adapters.in.rest.controller;
 
 import br.com.destinify.destinify.application.dto.request.TripFilterQuery;
-import br.com.destinify.destinify.application.ports.in.*;
+import br.com.destinify.destinify.application.ports.in.trip.*;
 import br.com.destinify.destinify.domain.model.Trip;
 import br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.request.CreateTripRequest;
 import br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.request.UpdateTripRequest;
 import br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.response.ResponseAPIDefault;
-import br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.TripResponse;
+import br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.response.TripResponse;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

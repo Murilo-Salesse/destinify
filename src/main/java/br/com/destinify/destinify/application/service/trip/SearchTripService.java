@@ -1,7 +1,7 @@
-package br.com.destinify.destinify.application.service;
+package br.com.destinify.destinify.application.service.trip;
 
 import br.com.destinify.destinify.application.dto.request.TripFilterQuery;
-import br.com.destinify.destinify.application.ports.in.SearchTripUseCase;
+import br.com.destinify.destinify.application.ports.in.trip.SearchTripUseCase;
 import br.com.destinify.destinify.application.ports.out.TripRepositoryPort;
 import br.com.destinify.destinify.domain.model.Trip;
 import org.springframework.data.domain.Page;

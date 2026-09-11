@@ -1,7 +1,7 @@
-package br.com.destinify.destinify.application.service;
+package br.com.destinify.destinify.application.service.trip;
 
 import br.com.destinify.destinify.application.dto.request.CreateTripCommand;
-import br.com.destinify.destinify.application.ports.in.CreateTripUseCase;
+import br.com.destinify.destinify.application.ports.in.trip.CreateTripUseCase;
 import br.com.destinify.destinify.application.ports.out.TripRepositoryPort;
 import br.com.destinify.destinify.domain.model.Trip;
 import org.springframework.stereotype.Service;

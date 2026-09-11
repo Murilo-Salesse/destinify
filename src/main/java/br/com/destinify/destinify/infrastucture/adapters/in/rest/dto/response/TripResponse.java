@@ -1,4 +1,4 @@
-package br.com.destinify.destinify.infrastucture.adapters.in.rest.dto;
+package br.com.destinify.destinify.infrastucture.adapters.in.rest.dto.response;
 
 import br.com.destinify.destinify.domain.enums.TripStatus;
 import br.com.destinify.destinify.domain.model.Trip;

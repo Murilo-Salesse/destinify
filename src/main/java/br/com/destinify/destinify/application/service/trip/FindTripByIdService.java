@@ -1,6 +1,6 @@
-package br.com.destinify.destinify.application.service;
+package br.com.destinify.destinify.application.service.trip;
 
-import br.com.destinify.destinify.application.ports.in.GetTripByIdUseCase;
+import br.com.destinify.destinify.application.ports.in.trip.GetTripByIdUseCase;
 import br.com.destinify.destinify.application.ports.out.TripRepositoryPort;
 import br.com.destinify.destinify.domain.exception.ResourceNotFoundException;
 import br.com.destinify.destinify.domain.model.Trip;

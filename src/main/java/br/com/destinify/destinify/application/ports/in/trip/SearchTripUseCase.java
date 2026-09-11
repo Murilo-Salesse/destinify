@@ -1,4 +1,4 @@
-package br.com.destinify.destinify.application.ports.in;
+package br.com.destinify.destinify.application.ports.in.trip;
 
 import br.com.destinify.destinify.application.dto.request.TripFilterQuery;
 import br.com.destinify.destinify.domain.model.Trip;

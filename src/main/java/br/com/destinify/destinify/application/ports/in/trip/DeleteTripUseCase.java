@@ -1,4 +1,4 @@
-package br.com.destinify.destinify.application.ports.in;
+package br.com.destinify.destinify.application.ports.in.trip;
 
 import java.util.UUID;
 

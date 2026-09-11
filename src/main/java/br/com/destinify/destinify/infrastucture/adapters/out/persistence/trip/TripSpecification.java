@@ -1,4 +1,4 @@
-package br.com.destinify.destinify.infrastucture.adapters.out.persistence;
+package br.com.destinify.destinify.infrastucture.adapters.out.persistence.trip;
 
 import br.com.destinify.destinify.application.dto.request.TripFilterQuery;
 import br.com.destinify.destinify.infrastucture.adapters.out.entity.TripEntity;

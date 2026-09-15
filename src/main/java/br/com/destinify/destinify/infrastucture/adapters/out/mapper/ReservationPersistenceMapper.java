@@ -43,4 +43,20 @@ public class ReservationPersistenceMapper {
                 entity.getCreatedAt()
         );
     }
+
+    // Atualiza uma entidade existente a partir do domínio
+    public static void updateEntity(ReservationEntity entity, Reservation domain, TripEntity tripEntity) {
+        if (entity == null || domain == null) return;
+
+        entity.setTrip(tripEntity);
+        entity.setContactName(domain.getContactName());
+        entity.setContactEmail(domain.getContactEmail());
+        entity.setContactPhone(domain.getContactPhone());
+        entity.setTotalAmount(domain.getTotalAmount());
+        entity.setSeatsCount(domain.getSeatsCount());
+        entity.setBoardingLocation(domain.getBoardingLocation());
+        entity.setStatus(domain.getStatus());
+        entity.setExpiresAt(domain.getExpiresAt());
+        entity.setConfirmedAt(domain.getConfirmedAt());
+    }
 }

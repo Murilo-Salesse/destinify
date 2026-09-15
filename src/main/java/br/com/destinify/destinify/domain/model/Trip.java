@@ -123,6 +123,37 @@ public class Trip {
         this.updatedAt = OffsetDateTime.now();
     }
 
+    public void reserveSeats(int seatsToReserve) {
+        if (this.status != TripStatus.PUBLISHED) {
+            throw new BusinessException("Não é possível reservar vagas em uma viagem que não está aberta para venda (Status atual: " + this.status.getDescription() + ").");
+        }
+
+        if (seatsToReserve <= 0) {
+            throw new BusinessException("A quantidade de assentos para reserva deve ser maior que zero.");
+        }
+
+        if (seatsToReserve > this.availableSeats) {
+            throw new BusinessException("Vagas insuficientes no ônibus. Restam apenas " + this.availableSeats + " assento(s) disponível(is).");
+        }
+
+        this.availableSeats -= seatsToReserve;
+        this.updatedAt = OffsetDateTime.now();
+    }
+
+    public void releaseSeats(int seatsToRelease) {
+        if (seatsToRelease <= 0) {
+            throw new BusinessException("A quantidade de assentos para liberar deve ser maior que zero.");
+        }
+
+        if (this.availableSeats + seatsToRelease > this.totalSeats) {
+            this.availableSeats = this.totalSeats;
+        } else {
+            this.availableSeats += seatsToRelease;
+        }
+
+        this.updatedAt = OffsetDateTime.now();
+    }
+
     public UUID getId() { return id; }
     public String getTitle() { return title; }
     public String getDestination() { return destination; }

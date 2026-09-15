@@ -1,6 +1,7 @@
 package br.com.destinify.destinify.domain.model;
 
 import br.com.destinify.destinify.domain.enums.ReservationStatus;
+import br.com.destinify.destinify.domain.exception.BusinessException;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -36,7 +37,14 @@ public class Reservation {
         this.createdAt = createdAt;
     }
 
-    public static Reservation createNew(UUID tripId, String contactName, String contactEmail, String contactPhone, BigDecimal totalAmount, Integer seatsCount, String boardingLocation, OffsetDateTime expiresAt) {
+    public static Reservation createNew(UUID tripId,
+                                        String contactName,
+                                        String contactEmail,
+                                        String contactPhone,
+                                        BigDecimal totalAmount,
+                                        Integer seatsCount,
+                                        String boardingLocation,
+                                        OffsetDateTime expiresAt) {
         OffsetDateTime now = OffsetDateTime.now();
         return new Reservation(
                 UUID.randomUUID(),
@@ -52,6 +60,28 @@ public class Reservation {
                 null,
                 now
         );
+    }
+
+    public void confirm() {
+        if (this.status != ReservationStatus.PENDING) {
+            throw new BusinessException("Apenas reservas pendentes podem ser confirmadas. Status atual: " + this.status.getDescription());
+        }
+        if (OffsetDateTime.now().isAfter(this.expiresAt)) {
+            this.status = ReservationStatus.EXPIRED;
+            throw new BusinessException("Esta reserva expirou e não pode mais ser confirmada.");
+        }
+        this.status = ReservationStatus.CONFIRMED;
+        this.confirmedAt = OffsetDateTime.now();
+    }
+
+    public void cancel() {
+        if (this.status == ReservationStatus.CANCELLED) {
+            throw new BusinessException("A reserva já se encontra cancelada.");
+        }
+        if (this.status == ReservationStatus.EXPIRED) {
+            throw new BusinessException("A reserva já se encontra expirada.");
+        }
+        this.status = ReservationStatus.CANCELLED;
     }
 
     public UUID getId() { return id; }

@@ -1,0 +1,232 @@
+{
+  "info": {
+    "_postman_id": "destinify-trips-collection-v1",
+    "name": "Destinify - Trip API",
+    "description": "Coleção completa de requisições da API de Viagens (TripController) do Destinify.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "tripId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Criar Viagem (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.data && jsonData.data.id) {",
+              "        pm.collectionVariables.set('tripId', jsonData.data.id);",
+              "        console.log('tripId salvo automaticamente:', jsonData.data.id);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Excursão Beto Carrero World\",\n  \"destination\": \"Penha - SC\",\n  \"departureAt\": \"2026-11-15T22:00:00-03:00\",\n  \"returnAt\": \"2026-11-18T06:00:00-03:00\",\n  \"price\": 450.00,\n  \"totalSeats\": 46,\n  \"description\": \"Viagem completa com transporte rodoviário leito turismo, café da manhã e passaporte de 2 dias.\",\n  \"includedItems\": \"Transporte leito, Guia credenciado, Seguro viagem, 2 ingressos parque\",\n  \"coverImageUrl\": \"https://images.unsplash.com/photo-1513836279014-a89f7a76ae86\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips"
+          ]
+        },
+        "description": "Cria uma nova viagem. Salva o tripId gerado automaticamente na variável da collection."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Buscar por ID (GET)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips/{{tripId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips",
+            "{{tripId}}"
+          ]
+        },
+        "description": "Recupera uma viagem específica a partir do seu UUID."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Listar Viagens Paginado sem Filtro (GET)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips?page=0&size=10&sort=departureAt,asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0",
+              "description": "Número da página (0-indexed)"
+            },
+            {
+              "key": "size",
+              "value": "10",
+              "description": "Quantidade de itens por página"
+            },
+            {
+              "key": "sort",
+              "value": "departureAt,asc",
+              "description": "Campo e direção da ordenação"
+            }
+          ]
+        },
+        "description": "Lista todas as viagens com paginação padrão."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Buscar com Filtros Avançados (GET)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips?destination=Penha&minPrice=200.00&maxPrice=600.00&page=0&size=10&sort=price,asc",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips"
+          ],
+          "query": [
+            {
+              "key": "destination",
+              "value": "Penha",
+              "description": "Filtro por destino (LIKE case-insensitive)"
+            },
+            {
+              "key": "status",
+              "value": "DRAFT",
+              "description": "Status da viagem (DRAFT, PUBLISHED, etc)",
+              "disabled": true
+            },
+            {
+              "key": "minPrice",
+              "value": "200.00",
+              "description": "Preço mínimo"
+            },
+            {
+              "key": "maxPrice",
+              "value": "600.00",
+              "description": "Preço máximo"
+            },
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "10"
+            },
+            {
+              "key": "sort",
+              "value": "price,asc"
+            }
+          ]
+        },
+        "description": "Demonstração de busca com Specification (filtros dinâmicos combinados)."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Atualizar Viagem (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Excursão Beto Carrero World - Black Friday\",\n  \"departureAt\": \"2026-11-15T22:00:00-03:00\",\n  \"returnAt\": \"2026-11-18T06:00:00-03:00\",\n  \"price\": 420.00,\n  \"totalSeats\": 48,\n  \"description\": \"Preço promocional atualizado com ônibus leito e seguro incluso!\",\n  \"includedItems\": \"Transporte leito, Guia credenciado, Seguro viagem, 2 ingressos parque, Café da manhã\",\n  \"coverImageUrl\": \"https://images.unsplash.com/photo-1513836279014-a89f7a76ae86\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips/{{tripId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips",
+            "{{tripId}}"
+          ]
+        },
+        "description": "Atualiza os dados de uma viagem existente."
+      },
+      "response": []
+    },
+    {
+      "name": "6. Deletar Viagem (DELETE)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/trips/{{tripId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "trips",
+            "{{tripId}}"
+          ]
+        },
+        "description": "Deleta a viagem informada pelo UUID. Retorna HTTP 204 No Content."
+      },
+      "response": []
+    }
+  ]
+}

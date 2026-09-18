@@ -1,10 +1,8 @@
 package br.com.destinify.destinify;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DestinifyApplicationTests {
+class DestinifyApplicationTests extends AbstractIntegrationTest {
 
 	@Test
 	void contextLoads() {

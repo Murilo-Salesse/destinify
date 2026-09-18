@@ -18,10 +18,14 @@ public record ReservationResponse(
         String boardingLocation,
         ReservationStatus status,
         OffsetDateTime expiresAt,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        java.util.List<PassengerResponse> passengers
 ) {
 
     public static ReservationResponse fromDomain(Reservation reservation){
+        java.util.List<PassengerResponse> passengerResponses = 
+                reservation.getPassengers() != null ? reservation.getPassengers().stream().map(PassengerResponse::fromDomain).toList() : java.util.List.of();
+
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getTripId(),
@@ -33,7 +37,8 @@ public record ReservationResponse(
                 reservation.getBoardingLocation(),
                 reservation.getStatus(),
                 reservation.getExpiresAt(),
-                reservation.getCreatedAt()
+                reservation.getCreatedAt(),
+                passengerResponses
         );
     }
 }

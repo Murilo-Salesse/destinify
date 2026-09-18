@@ -1,6 +1,7 @@
 package br.com.destinify.destinify.infrastucture.adapters.out.mapper;
 
 import br.com.destinify.destinify.domain.model.Reservation;
+import br.com.destinify.destinify.infrastucture.adapters.out.entity.PassengerEntity;
 import br.com.destinify.destinify.infrastucture.adapters.out.entity.ReservationEntity;
 import br.com.destinify.destinify.infrastucture.adapters.out.entity.TripEntity;
 
@@ -9,7 +10,7 @@ public class ReservationPersistenceMapper {
     // Domínio -> Banco (JPA)
     public static ReservationEntity toEntity(Reservation domain, TripEntity tripEntity) {
         if (domain == null) return null;
-        return new ReservationEntity(
+        ReservationEntity entity = new ReservationEntity(
                 domain.getId(),
                 tripEntity,
                 domain.getContactName(),
@@ -23,11 +24,28 @@ public class ReservationPersistenceMapper {
                 domain.getConfirmedAt(),
                 domain.getCreatedAt()
         );
+
+        if (domain.getPassengers() != null && !domain.getPassengers().isEmpty()) {
+            java.util.List<PassengerEntity> passengerEntities = domain.getPassengers().stream()
+                    .map(p -> PassengerPersistenceMapper.toEntity(p, entity))
+                    .collect(java.util.stream.Collectors.toList());
+            entity.setPassengers(passengerEntities);
+        }
+
+        return entity;
     }
 
     // Banco (JPA) -> Domínio
     public static Reservation toDomain(ReservationEntity entity) {
         if (entity == null) return null;
+
+        java.util.List<br.com.destinify.destinify.domain.model.Passenger> passengers = new java.util.ArrayList<>();
+        if (entity.getPassengers() != null) {
+            passengers = entity.getPassengers().stream()
+                    .map(PassengerPersistenceMapper::toDomain)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
         return new Reservation(
                 entity.getId(),
                 entity.getTripId(),
@@ -40,7 +58,8 @@ public class ReservationPersistenceMapper {
                 entity.getStatus(),
                 entity.getExpiresAt(),
                 entity.getConfirmedAt(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                passengers
         );
     }
 

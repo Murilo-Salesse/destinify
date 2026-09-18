@@ -18,10 +18,14 @@ public class CreateReservationService implements CreateReservationUseCase {
 
     private final ReservationRepositoryPort reservationRepositoryPort;
     private final TripRepositoryPort tripRepositoryPort;
+    private final br.com.destinify.destinify.application.ports.out.ReservationEventPublisherPort reservationEventPublisherPort;
 
-    public CreateReservationService(ReservationRepositoryPort reservationRepositoryPort, TripRepositoryPort tripRepositoryPort) {
+    public CreateReservationService(ReservationRepositoryPort reservationRepositoryPort,
+                                  TripRepositoryPort tripRepositoryPort,
+                                  br.com.destinify.destinify.application.ports.out.ReservationEventPublisherPort reservationEventPublisherPort) {
         this.reservationRepositoryPort = reservationRepositoryPort;
         this.tripRepositoryPort = tripRepositoryPort;
+        this.reservationEventPublisherPort = reservationEventPublisherPort;
     }
 
     @Override
@@ -47,6 +51,31 @@ public class CreateReservationService implements CreateReservationUseCase {
                 command.boardingLocation(),
                 expiresAt
         );
-        return reservationRepositoryPort.save(reservation);
+
+        if (command.passengers() != null) {
+            for (var pCmd : command.passengers()) {
+                reservation.addPassenger(br.com.destinify.destinify.domain.model.Passenger.createNew(
+                        reservation.getId(),
+                        pCmd.fullName(),
+                        pCmd.documentNumber(),
+                        pCmd.documentType(),
+                        pCmd.age(),
+                        pCmd.city()
+                ));
+            }
+        }
+
+        Reservation savedReservation = reservationRepositoryPort.save(reservation);
+
+        // Publica evento para o RabbitMQ com TTL de expiração
+        reservationEventPublisherPort.publishReservationCreated(
+                new br.com.destinify.destinify.application.dto.event.ReservationCreatedEvent(
+                        savedReservation.getId(),
+                        savedReservation.getTripId(),
+                        savedReservation.getSeatsCount()
+                )
+        );
+
+        return savedReservation;
     }
 }

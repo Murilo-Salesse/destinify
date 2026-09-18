@@ -49,6 +49,9 @@ public class ReservationEntity {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private java.util.List<PassengerEntity> passengers = new java.util.ArrayList<>();
+
     public ReservationEntity() {
     }
 
@@ -106,4 +109,7 @@ public class ReservationEntity {
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
+
+    public java.util.List<PassengerEntity> getPassengers() { return passengers; }
+    public void setPassengers(java.util.List<PassengerEntity> passengers) { this.passengers = passengers; }
 }

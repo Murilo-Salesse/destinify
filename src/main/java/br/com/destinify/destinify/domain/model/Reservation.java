@@ -21,8 +21,13 @@ public class Reservation {
     private OffsetDateTime expiresAt;
     private OffsetDateTime confirmedAt;
     private OffsetDateTime createdAt;
+    private java.util.List<Passenger> passengers = new java.util.ArrayList<>();
 
     public Reservation(UUID id, UUID tripId, String contactName, String contactEmail, String contactPhone, BigDecimal totalAmount, Integer seatsCount, String boardingLocation, ReservationStatus status, OffsetDateTime expiresAt, OffsetDateTime confirmedAt, OffsetDateTime createdAt) {
+        this(id, tripId, contactName, contactEmail, contactPhone, totalAmount, seatsCount, boardingLocation, status, expiresAt, confirmedAt, createdAt, new java.util.ArrayList<>());
+    }
+
+    public Reservation(UUID id, UUID tripId, String contactName, String contactEmail, String contactPhone, BigDecimal totalAmount, Integer seatsCount, String boardingLocation, ReservationStatus status, OffsetDateTime expiresAt, OffsetDateTime confirmedAt, OffsetDateTime createdAt, java.util.List<Passenger> passengers) {
         this.id = id;
         this.tripId = tripId;
         this.contactName = contactName;
@@ -35,6 +40,9 @@ public class Reservation {
         this.expiresAt = expiresAt;
         this.confirmedAt = confirmedAt;
         this.createdAt = createdAt;
+        if (passengers != null) {
+            this.passengers = passengers;
+        }
     }
 
     public static Reservation createNew(UUID tripId,
@@ -58,7 +66,8 @@ public class Reservation {
                 ReservationStatus.PENDING,
                 expiresAt,
                 null,
-                now
+                now,
+                new java.util.ArrayList<>()
         );
     }
 
@@ -84,6 +93,12 @@ public class Reservation {
         this.status = ReservationStatus.CANCELLED;
     }
 
+    public void expire() {
+        if (this.status == ReservationStatus.PENDING) {
+            this.status = ReservationStatus.EXPIRED;
+        }
+    }
+
     public UUID getId() { return id; }
     public UUID getTripId() { return tripId; }
     public String getContactName() { return contactName; }
@@ -96,4 +111,11 @@ public class Reservation {
     public OffsetDateTime getExpiresAt() { return expiresAt; }
     public OffsetDateTime getConfirmedAt() { return confirmedAt; }
     public OffsetDateTime getCreatedAt() { return createdAt; }
+    public java.util.List<Passenger> getPassengers() { return passengers; }
+    public void addPassenger(Passenger passenger) {
+        if (this.passengers.size() >= this.seatsCount) {
+            throw new BusinessException("A quantidade de passageiros não pode exceder o total de assentos reservados (" + this.seatsCount + ").");
+        }
+        this.passengers.add(passenger);
+    }
 }
